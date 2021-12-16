@@ -1,0 +1,12 @@
+CREATE DATABASE IF NOT EXISTS rsTest;
+
+USE rsTest;
+
+CREATE TABLE IF NOT EXISTS TestDB
+(
+    id      INT AUTO_INCREMENT,
+    title   VARCHAR(255) NOT NULL,
+    content VARCHAR(255),
+    author  VARCHAR(80)  NOT NULL,
+    PRIMARY KEY (id)
+);
