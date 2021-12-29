@@ -1,5 +1,4 @@
 import logo from "./logo.svg";
-import List from "./list/List";
 import { useEffect, useState } from "react";
 import Board from "./Board/Board";
 
