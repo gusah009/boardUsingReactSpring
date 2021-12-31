@@ -13,7 +13,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping(path="/board")
+@RequestMapping(path = "/board")
 @AllArgsConstructor
 public class BoardController {
   private BoardServiceImpl service;
