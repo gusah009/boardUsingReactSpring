@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+.appication.properties
+*.appication.properties
+._.appication.properties
+**/.appication.properties
+**/._.appication.properties
