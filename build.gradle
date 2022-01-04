@@ -53,9 +53,12 @@ sourceSets {
         }
     }
 }
+
+/******* Start Frontend build *******/
 processResources {
     dependsOn "copyReactBuildFiles"
 }
+
 task installReact(type: Exec) {
     workingDir "$frontendDir"
     inputs.dir "$frontendDir"
@@ -84,6 +87,26 @@ task copyReactBuildFiles(type: Copy) {
     from "$frontendDir/build"
     into "$projectDir/src/main/resources/static"
 }
+/******* End Frontend build *******/
+
+/******* Start Spring Rest Docs *******/
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+test {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+asciidoctor { // (3)
+    dependsOn test
+    inputs.dir snippetsDir
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
 
 task copyDocument(type: Copy) {
     dependsOn bootJar
@@ -94,3 +117,4 @@ task copyDocument(type: Copy) {
 build {
     dependsOn copyDocument
 }
+/******* End Spring Rest Docs *******/
