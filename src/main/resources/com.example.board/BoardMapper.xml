@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.board.mapper.BoardMapper">
+  <select id="getList" resultType="com.example.board.domain.BoardVO">
+        <![CDATA[
+    SELECT *
+    FROM rs_test.test_table
+    ]]>
+    </select>
+
+  <insert id="insert">
+    INSERT INTO rs_test.test_table (title, content, author)
+    VALUES (#{title}, #{content}, #{author})
+  </insert>
+
+  <select id="read" resultType="com.example.board.domain.BoardVO">
+    SELECT *
+    FROM rs_test.test_table
+    WHERE id = #{id}
+  </select>
+
+  <delete id="delete">
+    DELETE
+    FROM rs_test.test_table
+    WHERE id = #{id}
+  </delete>
+
+  <update id="update">
+    UPDATE rs_test.test_table
+    SET title       = #{title},
+        content     = #{content},
+        author      = #{author},
+        update_date = CURRENT_TIMESTAMP
+    WHERE id = #{id}
+  </update>
+</mapper>
