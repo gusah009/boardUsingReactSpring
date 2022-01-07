@@ -2,11 +2,12 @@ plugins {
     id 'org.springframework.boot' version '2.6.1'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+//sourceCompatibility = '1.7'
 
 configurations {
     compileOnly {
@@ -24,19 +25,23 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.1'
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.1'
     implementation 'org.springframework.boot:spring-boot-starter-log4j2'
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'mysql:mysql-connector-java'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 
-test {
-    useJUnitPlatform()
+    compileOnly 'org.projectlombok:lombok'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    runtimeOnly 'mysql:mysql-connector-java'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.2.1'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 def frontendDir = "$projectDir/frontend"
@@ -48,9 +53,12 @@ sourceSets {
         }
     }
 }
+
+/******* Start Frontend build *******/
 processResources {
     dependsOn "copyReactBuildFiles"
 }
+
 task installReact(type: Exec) {
     workingDir "$frontendDir"
     inputs.dir "$frontendDir"
@@ -61,6 +69,7 @@ task installReact(type: Exec) {
         commandLine "npm", "audit", "fix" commandLine 'npm', 'install'
     }
 }
+
 task buildReact(type: Exec) {
     dependsOn "installReact"
     workingDir "$frontendDir"
@@ -72,8 +81,40 @@ task buildReact(type: Exec) {
         commandLine "npm", "run-script", "build"
     }
 }
+
 task copyReactBuildFiles(type: Copy) {
     dependsOn "buildReact"
     from "$frontendDir/build"
     into "$projectDir/src/main/resources/static"
 }
+/******* End Frontend build *******/
+
+/******* Start Spring Rest Docs *******/
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+test {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+asciidoctor { // (3)
+    dependsOn test
+    inputs.dir snippetsDir
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+task copyDocument(type: Copy) {
+    dependsOn bootJar
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
+}
+/******* End Spring Rest Docs *******/

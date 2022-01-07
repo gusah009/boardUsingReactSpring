@@ -1,6 +1,6 @@
 import logo from "./logo.svg";
-import List from "./list/List";
 import { useEffect, useState } from "react";
+import Board from "./Board/Board";
 
 function App() {
   // const [message, setMessage] = useState([]);
@@ -15,9 +15,28 @@ function App() {
   // }, []);
 
   return (
-    <>
-      <List />
-    </>
+    <Board />
+    // <div className="App">
+    //   <header className="App-header">
+    //     <img src={logo} className="App-logo" alt="logo" />
+    //     <p>
+    //       Edit <code>src/App.js</code> and save to reload.
+    //     </p>
+    //     <a
+    //       className="App-link"
+    //       href="https://reactjs.org"
+    //       target="_blank"
+    //       rel="noopener noreferrer"
+    //     >
+    //       Learn React
+    //     </a>
+    //     <ul>
+    //       {message.map((text, index) => (
+    //         <li key={`${index}-${text}`}>{text}</li>
+    //       ))}
+    //     </ul>
+    //   </header>
+    // </div>
   );
 }
 
